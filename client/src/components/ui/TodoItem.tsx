@@ -4,18 +4,20 @@ import { MdDelete } from "react-icons/md";
 import type { Todo } from "./TodoList";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const BASE_URL = "http://localhost:5000/api"; // Change to your backend URL
+const BASE_URL = "http://localhost:5000/api";
 
 const TodoItem = ({ todo }: { todo: Todo }) => {
   const queryClient = useQueryClient();
 
   const { mutate: updateTodo, isPending: isUpdating } = useMutation({
-    mutationKey: ["updateTodo", todo._id],
-    mutationFn: async () => {
-      if (todo.completed) return alert("Todo is already completed");
-      const res = await fetch(`${BASE_URL}/todos/${todo._id}`, {
+    mutationKey: ["updateTodo"],
+    mutationFn: async (id: string) => {
+      if (todo.completed) throw new Error("Todo is already completed");
+
+      const res = await fetch(`${BASE_URL}/todos/${id}`, {
         method: "PATCH",
       });
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Update failed");
       return data;
@@ -23,20 +25,27 @@ const TodoItem = ({ todo }: { todo: Todo }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
+    onError: (error: any) => {
+      alert(`Update error: ${error.message || error}`);
+    },
   });
 
   const { mutate: deleteTodo, isPending: isDeleting } = useMutation({
-    mutationKey: ["deleteTodo", todo._id],
-    mutationFn: async () => {
-      const res = await fetch(`${BASE_URL}/todos/${todo._id}`, {
+    mutationKey: ["deleteTodo"],
+    mutationFn: async (id: string) => {
+      const res = await fetch(`${BASE_URL}/todos/${id}`, {
         method: "DELETE",
       });
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Delete failed");
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+    onError: (error: any) => {
+      alert(`Delete error: ${error.message || error}`);
     },
   });
 
@@ -69,10 +78,18 @@ const TodoItem = ({ todo }: { todo: Todo }) => {
       </Flex>
 
       <Flex gap={2} alignItems="center">
-        <Box color="green.500" cursor="pointer" onClick={() => updateTodo()}>
+        <Box
+          color="green.500"
+          cursor="pointer"
+          onClick={() => updateTodo(todo._id)}
+        >
           {!isUpdating ? <FaCheckCircle size={20} /> : <Spinner size="sm" />}
         </Box>
-        <Box color="red.500" cursor="pointer" onClick={() => deleteTodo()}>
+        <Box
+          color="red.500"
+          cursor="pointer"
+          onClick={() => deleteTodo(todo._id)}
+        >
           {!isDeleting ? <MdDelete size={25} /> : <Spinner size="sm" />}
         </Box>
       </Flex>

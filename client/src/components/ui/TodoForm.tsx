@@ -1,13 +1,38 @@
 import { Box, Flex, Button, Text, Container, Input } from "@chakra-ui/react";
 import { IoMoon } from "react-icons/io5";
 import { LuSun } from "react-icons/lu";
-import { useColorMode } from "./useColorMode"; // Make sure Chakra is correctly installed
+import { useColorMode } from "./useColorMode";
 import { useEffect, useRef, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+const BASE_URL = "http://localhost:5000/api"; // Your backend URL
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
   const [newTodo, setNewTodo] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
+
+  // Mutation for adding a new todo
+  const { mutate: addTodo, isPending } = useMutation({
+    mutationFn: async (body: string) => {
+      const res = await fetch(`${BASE_URL}/todos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to add todo");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] }); // refresh todos list
+      setNewTodo("");
+      inputRef.current?.focus();
+    },
+  });
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -39,16 +64,16 @@ export default function Navbar() {
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
             placeholder="Add a new task"
+            disabled={isPending}
           />
           <Button
             colorScheme="teal"
             onClick={() => {
               if (newTodo.trim()) {
-                console.log("New todo:", newTodo);
-                setNewTodo("");
-                inputRef.current?.focus(); // refocus after adding
+                addTodo(newTodo.trim());
               }
             }}
+            loading={isPending}
           >
             Add
           </Button>

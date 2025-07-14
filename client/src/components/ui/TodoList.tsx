@@ -3,30 +3,36 @@ import TodoItem from "./TodoItem";
 import { useQuery } from "@tanstack/react-query";
 
 export type Todo = {
-  _id: number;
+  _id: string;
   body: string;
   completed: boolean;
 };
 
 const TodoList = () => {
-  const { data: todos, isLoading } = useQuery<Todo[]>({
+  const {
+    data: todos = [], // ✅ Default empty array
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Todo[]>({
     queryKey: ["todos"],
     queryFn: async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/todos")
+        const res = await fetch("http://localhost:5000/api/todos");
         const data = await res.json();
 
         if (!res.ok) {
-          throw new Error(data.error || "Something went wrong")
+          throw new Error(data.error || "Something went wrong");
         }
-        return data || []
 
+        return data || [];
       } catch (error) {
-        console.log(error)
+        console.error("Failed to fetch todos:", error);
+        return []; // ✅ Prevent undefined return
       }
+    },
+  });
 
-    }
-  })
   return (
     <>
       <Text
@@ -45,7 +51,13 @@ const TodoList = () => {
         </Flex>
       )}
 
-      {!isLoading && todos && todos.length === 0 && (
+      {isError && (
+        <Text textAlign="center" color="red.400" my={4}>
+          {(error as Error).message || "Something went wrong."}
+        </Text>
+      )}
+
+      {!isLoading && todos.length === 0 && (
         <Stack alignItems="center" gap={3}>
           <Text fontSize="xl" textAlign="center" color="gray.500">
             All tasks completed! 🤞
@@ -55,7 +67,7 @@ const TodoList = () => {
       )}
 
       <Stack gap={3}>
-        {(todos ?? []).map((todo: Todo) => (
+        {todos.map((todo) => (
           <TodoItem key={todo._id} todo={todo} />
         ))}
       </Stack>
@@ -64,7 +76,3 @@ const TodoList = () => {
 };
 
 export default TodoList;
-// function useQuery<T>(arg0: { queryKey: string[]; queryFn: () => Promise<any>; }): { data: any; isLoading: any; } {
-//   throw new Error("Function not implemented.");
-// }
-
