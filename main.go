@@ -135,7 +135,7 @@ func main() {
 
 	// Enable CORS
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5174, https://todoapp-frontend.onrender.com",
+		AllowOrigins: "http://localhost:5174, https://todoapp-3-aujy.onrender.com",
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
