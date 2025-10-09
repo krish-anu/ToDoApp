@@ -23,7 +23,7 @@ const TodoApp: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.get<Todo[]>("http://localhost:5000/api/todos");
+      const res = await axios.get<Todo[]>("https://todoapp-3.onrender.com/api/todos");
       // Guard against null or unexpected responses from the API
       setTodos(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
