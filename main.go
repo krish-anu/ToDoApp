@@ -68,20 +68,6 @@ func main() {
 	app.Patch("/api/todos/:id", updateTodo)
 	app.Delete("/api/todos/:id", deleteTodo)
 
-	// Serve client static files (Vite build output)
-	// In production the frontend should be built into client/dist
-	// and the server will serve files from that directory.
-	app.Static("/", "client/dist")
-
-	// SPA fallback: ensure unknown routes return index.html so client-side routing works
-	app.Use(func(c *fiber.Ctx) error {
-		// If the request accepts HTML, return the built index.html
-		if c.Accepts("html") == "html" {
-			return c.SendFile("client/dist/index.html")
-		}
-		return c.Next()
-	})
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "5000"
