@@ -24,9 +24,10 @@ const TodoApp: React.FC = () => {
       setLoading(true);
       setError(null);
       const res = await axios.get<Todo[]>("http://localhost:5000/api/todos");
-      setTodos(res.data);
+      // Guard against null or unexpected responses from the API
+      setTodos(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      setError("⚠️ Failed to fetch todos");
+      setError(" Failed to fetch todos");
       console.error(err);
     } finally {
       setLoading(false);
@@ -40,9 +41,10 @@ const TodoApp: React.FC = () => {
         body,
         completed: false,
       });
-      setTodos([...todos, res.data]);
+      // Use functional update and guard previous value
+      setTodos((prev) => [...(prev ?? []), res.data]);
     } catch (err) {
-      setError("⚠️ Failed to add todo");
+      setError(" Failed to add todo");
       console.error(err);
     }
   };
@@ -51,13 +53,14 @@ const TodoApp: React.FC = () => {
     try {
       setError(null);
       await axios.patch(`http://localhost:5000/api/todos/${id}`);
-      setTodos(
-        todos.map((todo) =>
+      // Use functional update and guard against null
+      setTodos((prev) =>
+        (prev ?? []).map((todo) =>
           todo._id === id ? { ...todo, completed: !todo.completed } : todo
         )
       );
     } catch (err) {
-      setError("⚠️ Failed to update todo");
+      setError(" Failed to update todo");
       console.error(err);
     }
   };
@@ -66,15 +69,18 @@ const TodoApp: React.FC = () => {
     try {
       setError(null);
       await axios.delete(`http://localhost:5000/api/todos/${id}`);
-      setTodos(todos.filter((todo) => todo._id !== id));
+      // Use functional update and guard against null
+      setTodos((prev) => (prev ?? []).filter((todo) => todo._id !== id));
     } catch (err) {
-      setError("⚠️ Failed to delete todo");
+      setError(" Failed to delete todo");
       console.error(err);
     }
   };
 
-  const completedCount = todos.filter((todo) => todo.completed).length;
-  const totalCount = todos.length;
+  // Defensive usage in case `todos` becomes null due to unexpected API responses
+  const safeTodos = todos ?? [];
+  const completedCount = safeTodos.filter((todo) => todo.completed).length;
+  const totalCount = safeTodos.length;
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900 px-4 py-12">

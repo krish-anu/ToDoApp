@@ -55,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({ totalCount, completedCount }) => {
                   {totalCount === 0
                     ? "No tasks yet"
                     : completedCount === totalCount
-                    ? "All done! 🎉"
+                    ? "All done! "
                     : `${totalCount - completedCount} remaining`}
                 </div>
               </div>
@@ -99,13 +99,13 @@ const Header: React.FC<HeaderProps> = ({ totalCount, completedCount }) => {
         {/* Motivation message */}
         <p className="text-purple-100 text-sm font-medium">
           {progress === 100
-            ? "🎉 Amazing work! You've completed everything!"
+            ? " Amazing work! You've completed everything!"
             : progress >= 75
             ? "🔥 You're almost there! Keep going!"
             : progress >= 50
             ? "💪 Great progress! You're halfway done!"
             : progress > 0
-            ? "🚀 Good start! Keep building momentum!"
+            ? " Good start! Keep building momentum!"
             : "📝 Ready to tackle your tasks?"}
         </p>
       </div>

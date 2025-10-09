@@ -39,8 +39,11 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete }) => {
     >
       {/* Checkbox */}
       <button
+        type="button"
         onClick={handleToggle}
         disabled={isToggling || isDeleting}
+        aria-pressed={todo.completed}
+        aria-label={todo.completed ? `Mark "${todo.body}" incomplete` : `Mark "${todo.body}" complete`}
         className={`
           flex items-center justify-center w-5 h-5 rounded border-2 transition-colors
           ${
@@ -101,7 +104,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete }) => {
           <button
             onClick={handleToggle}
             disabled={isToggling || isDeleting}
-            className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors disabled:opacity-50"
+            className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors disabled:opacity-50"
             title="Mark as incomplete"
           >
             <svg
