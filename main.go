@@ -2,9 +2,15 @@ package main
 
 import (
 	"context"
+	"embed"
 	"fmt"
+	"io"
+	"io/fs"
 	"log"
+	"mime"
 	"os"
+	"path"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -14,6 +20,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+// Embed the built frontend so the binary can serve static files after deployment.
+//go:embed client/dist/**
+var embeddedFiles embed.FS
+
 
 type Todo struct {
 	ID        primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
@@ -50,6 +61,51 @@ func main() {
 	collection = client.Database("golang_db").Collection("todos")
 
 	app := fiber.New()
+
+	// ---- Embedded static files (client/dist) ----
+	// Create a sub FS rooted at client/dist
+	distFS, err := fs.Sub(embeddedFiles, "client/dist")
+	if err != nil {
+		log.Printf("⚠️  Could not create embedded fs: %v (static files may not be available)", err)
+	} else {
+		// Serve embedded assets and provide SPA fallback
+		app.Get("/*", func(c *fiber.Ctx) error {
+			// Let API routes pass through
+			if strings.HasPrefix(c.Path(), "/api/") {
+				return c.Next()
+			}
+
+			reqPath := c.Path()
+			if reqPath == "/" || reqPath == "" {
+				reqPath = "/index.html"
+			}
+			fp := strings.TrimPrefix(reqPath, "/")
+
+			// Try to open the requested file from embedded FS
+			f, ferr := distFS.Open(fp)
+			if ferr != nil {
+				// Fallback to index.html for client-side routing
+				idx, ierr := distFS.Open("index.html")
+				if ierr != nil {
+					return c.Status(404).SendString("Not found")
+				}
+				defer idx.Close()
+				c.Set("Content-Type", "text/html; charset=utf-8")
+				return c.SendStream(idx)
+			}
+			defer f.Close()
+
+			// Set content-type based on extension when available
+			if ext := path.Ext(fp); ext != "" {
+				if m := mime.TypeByExtension(ext); m != "" {
+					c.Set("Content-Type", m)
+				}
+			}
+
+			// Stream the file
+			return c.SendStream(io.NopCloser(f))
+		})
+	}
 
 	// Health check for Render
 	app.Get("/healthz", func(c *fiber.Ctx) error {
