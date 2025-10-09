@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import TodoForm from "./TodoForm.tsx";
 import TodoList from "./TodoList.tsx";
 import Header from "./Header.tsx";
@@ -23,7 +23,7 @@ const TodoApp: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.get<Todo[]>("https://todoapp-3.onrender.com/api/todos");
+  const res = await api.get<Todo[]>("/api/todos");
       // Guard against null or unexpected responses from the API
       setTodos(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
@@ -37,7 +37,7 @@ const TodoApp: React.FC = () => {
   const addTodo = async (body: string) => {
     try {
       setError(null);
-      const res = await axios.post<Todo>("http://localhost:5000/api/todos", {
+  const res = await api.post<Todo>("/api/todos", {
         body,
         completed: false,
       });
@@ -52,7 +52,7 @@ const TodoApp: React.FC = () => {
   const toggleTodo = async (id: string) => {
     try {
       setError(null);
-      await axios.patch(`http://localhost:5000/api/todos/${id}`);
+  await api.patch(`/api/todos/${id}`);
       // Use functional update and guard against null
       setTodos((prev) =>
         (prev ?? []).map((todo) =>
@@ -68,7 +68,7 @@ const TodoApp: React.FC = () => {
   const deleteTodo = async (id: string) => {
     try {
       setError(null);
-      await axios.delete(`http://localhost:5000/api/todos/${id}`);
+  await api.delete(`/api/todos/${id}`);
       // Use functional update and guard against null
       setTodos((prev) => (prev ?? []).filter((todo) => todo._id !== id));
     } catch (err) {

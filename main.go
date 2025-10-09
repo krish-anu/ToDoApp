@@ -134,8 +134,13 @@ func main() {
 	})
 
 	// Enable CORS
+	allowOrigins := os.Getenv("ALLOW_ORIGINS")
+	if allowOrigins == "" {
+		// default to local dev origin
+		allowOrigins = "http://localhost:5174"
+	}
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5174, https://todoapp-3-aujy.onrender.com",
+		AllowOrigins: allowOrigins,
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
