@@ -66,7 +66,28 @@ func main() {
 	// Create a sub FS rooted at client/dist
 	distFS, err := fs.Sub(embeddedFiles, "client/dist")
 	if err != nil {
-		log.Printf("⚠️  Could not create embedded fs: %v (static files may not be available)", err)
+		log.Printf("⚠️  Could not create embedded fs: %v (static files may not be available at compile-time)", err)
+
+		// Fallback: serve files from disk at runtime if `client/dist` exists.
+		// This helps deployments that build the frontend during the deploy step
+		// (producing `client/dist` on the host) but did not embed files at compile time.
+		app.Static("/", "./client/dist")
+
+		// SPA fallback: send index.html for client-side routes
+		app.Get("/*", func(c *fiber.Ctx) error {
+			if strings.HasPrefix(c.Path(), "/api/") {
+				return c.Next()
+			}
+			reqPath := c.Path()
+			if reqPath == "/" || reqPath == "" {
+				reqPath = "/index.html"
+			}
+			fp := "./client/dist" + reqPath
+			if _, statErr := os.Stat(fp); statErr != nil {
+				return c.Status(404).SendString("Not found")
+			}
+			return c.SendFile(fp)
+		})
 	} else {
 		// Serve embedded assets and provide SPA fallback
 		app.Get("/*", func(c *fiber.Ctx) error {
