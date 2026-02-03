@@ -136,8 +136,8 @@ func main() {
 	// Enable CORS
 	allowOrigins := os.Getenv("ALLOW_ORIGINS")
 	if allowOrigins == "" {
-		// default to local dev origin
-		allowOrigins = "http://localhost:5174"
+		// default to local dev origins (include both common vite ports)
+		allowOrigins = "http://localhost:5173,http://localhost:5174"
 	}
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: allowOrigins,
