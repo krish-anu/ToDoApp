@@ -35,7 +35,7 @@ type Todo struct {
 var collection *mongo.Collection
 
 func main() {
-	fmt.Println("🚀 Starting Go Fiber server...")
+	fmt.Println(" Starting Go Fiber server...")
 
 	// Load .env only locally (ignore errors in production)
 	_ = godotenv.Load(".env")
