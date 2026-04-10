@@ -10,6 +10,7 @@ node_modules/
 # Go build artifacts
 /app
 /main
+/ToDoAppBackend
 /bin/
 /tmp/
 *.test
