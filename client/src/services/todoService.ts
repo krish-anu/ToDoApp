@@ -1,5 +1,11 @@
 import api from "@/api";
-import type { CreateTodoInput, Todo, UpdateTodoInput } from "@/types/todo";
+import type {
+  CreateTodoFromTextInput,
+  CreateTodoFromTextResponse,
+  CreateTodoInput,
+  Todo,
+  UpdateTodoInput,
+} from "@/types/todo";
 
 export async function fetchTodos(): Promise<Todo[]> {
   const response = await api.get<Todo[]>("/api/todos");
@@ -24,4 +30,14 @@ export async function updateTodo(
 
 export async function removeTodo(id: string): Promise<void> {
   await api.delete(`/api/todos/${id}`);
+}
+
+export async function createTodoFromText(
+  payload: CreateTodoFromTextInput,
+): Promise<CreateTodoFromTextResponse> {
+  const response = await api.post<CreateTodoFromTextResponse>(
+    "/api/workflows/task-from-text",
+    payload,
+  );
+  return response.data;
 }

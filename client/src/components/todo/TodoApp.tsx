@@ -12,6 +12,7 @@ const TodoApp: React.FC = () => {
     totalCount,
     completedCount,
     addTodo,
+    addTodoWithWorkflow,
     toggleTodo,
     deleteTodo,
   } = useTodos();
@@ -22,7 +23,10 @@ const TodoApp: React.FC = () => {
         <Header totalCount={totalCount} completedCount={completedCount} />
 
         <div className="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-lg backdrop-blur-sm sm:p-8">
-          <TodoForm onAddTodo={addTodo} />
+          <TodoForm
+            onAddTodo={addTodo}
+            onAddTodoWithWorkflow={addTodoWithWorkflow}
+          />
 
           {error && (
             <div className="mb-4 rounded-lg border border-rose-300 bg-rose-50 px-4 py-3 text-rose-800">

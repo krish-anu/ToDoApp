@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import axios from "axios";
 import {
+  createTodoFromText,
   createTodo,
   fetchTodos,
   removeTodo,
@@ -10,6 +12,7 @@ import type { Todo } from "@/types/todo";
 const ERROR_MESSAGES = {
   FETCH: "Failed to load todos",
   CREATE: "Failed to add todo",
+  WORKFLOW: "Failed to create task from text",
   UPDATE: "Failed to update todo",
   DELETE: "Failed to delete todo",
 } as const;
@@ -46,6 +49,35 @@ export function useTodos() {
       console.error(createError);
       setError(ERROR_MESSAGES.CREATE);
       throw createError;
+    }
+  }, []);
+
+  const addTodoWithWorkflow = useCallback(async (message: string) => {
+    try {
+      setError(null);
+      const result = await createTodoFromText({
+        message,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+      });
+
+      setTodos((current) => [result.todo, ...current]);
+
+      if (result.partial) {
+        setError(result.message);
+      }
+    } catch (workflowError) {
+      console.error(workflowError);
+
+      if (axios.isAxiosError(workflowError)) {
+        const apiError = workflowError.response?.data as
+          | { error?: string }
+          | undefined;
+        setError(apiError?.error || ERROR_MESSAGES.WORKFLOW);
+      } else {
+        setError(ERROR_MESSAGES.WORKFLOW);
+      }
+
+      throw workflowError;
     }
   }, []);
 
@@ -97,6 +129,7 @@ export function useTodos() {
     totalCount: todos.length,
     completedCount,
     addTodo,
+    addTodoWithWorkflow,
     toggleTodo,
     deleteTodo,
     refresh: loadTodos,

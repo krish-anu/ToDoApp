@@ -52,3 +52,29 @@ air
 ```bash
 MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/todo_db
 ```
+
+### AI Workflow Setup (Task From Text)
+
+Add these values to `.env` to enable the workflow endpoint:
+
+```bash
+OPENAI_API_KEY=<your_openai_api_key>
+OPENAI_MODEL=gpt-4.1-mini
+OPENAI_BASE_URL=https://api.openai.com
+WORKFLOW_DEFAULT_USER_ID=local-user
+WORKFLOW_DEFAULT_TIMEZONE=UTC
+```
+
+You can create a task from natural language using:
+
+```http
+POST /api/workflows/task-from-text
+Content-Type: application/json
+
+{
+	"message": "Pay electricity bill tomorrow at 6 pm and remind me 1 hour before",
+	"timezone": "Asia/Kolkata"
+}
+```
+
+The workflow extracts task fields using OpenAI, creates a todo in MongoDB, and schedules a reminder record when requested.
