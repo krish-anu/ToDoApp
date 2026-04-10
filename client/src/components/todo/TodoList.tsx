@@ -17,7 +17,9 @@ const TodoList: React.FC<TodoListProps> = ({
     return (
       <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
         <h3 className="text-lg font-semibold text-slate-700">No tasks yet</h3>
-        <p className="mt-1 text-slate-500">Add your first task to get started.</p>
+        <p className="mt-1 text-slate-500">
+          Add your first task to get started.
+        </p>
       </div>
     );
   }

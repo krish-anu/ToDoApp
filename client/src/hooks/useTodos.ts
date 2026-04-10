@@ -49,24 +49,29 @@ export function useTodos() {
     }
   }, []);
 
-  const toggleTodo = useCallback(async (id: string) => {
-    const target = todos.find((todo) => todo._id === id);
-    if (!target) {
-      return;
-    }
+  const toggleTodo = useCallback(
+    async (id: string) => {
+      const target = todos.find((todo) => todo._id === id);
+      if (!target) {
+        return;
+      }
 
-    try {
-      setError(null);
-      const updatedTodo = await updateTodo(id, { completed: !target.completed });
-      setTodos((current) =>
-        current.map((todo) => (todo._id === id ? updatedTodo : todo))
-      );
-    } catch (updateError) {
-      console.error(updateError);
-      setError(ERROR_MESSAGES.UPDATE);
-      throw updateError;
-    }
-  }, [todos]);
+      try {
+        setError(null);
+        const updatedTodo = await updateTodo(id, {
+          completed: !target.completed,
+        });
+        setTodos((current) =>
+          current.map((todo) => (todo._id === id ? updatedTodo : todo)),
+        );
+      } catch (updateError) {
+        console.error(updateError);
+        setError(ERROR_MESSAGES.UPDATE);
+        throw updateError;
+      }
+    },
+    [todos],
+  );
 
   const deleteTodo = useCallback(async (id: string) => {
     try {
@@ -82,7 +87,7 @@ export function useTodos() {
 
   const completedCount = useMemo(
     () => todos.filter((todo) => todo.completed).length,
-    [todos]
+    [todos],
   );
 
   return {

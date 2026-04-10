@@ -14,7 +14,10 @@ export async function createTodo(payload: CreateTodoInput): Promise<Todo> {
   return response.data;
 }
 
-export async function updateTodo(id: string, payload: UpdateTodoInput): Promise<Todo> {
+export async function updateTodo(
+  id: string,
+  payload: UpdateTodoInput,
+): Promise<Todo> {
   const response = await api.patch<Todo>(`/api/todos/${id}`, payload);
   return response.data;
 }

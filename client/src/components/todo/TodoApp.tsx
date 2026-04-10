@@ -31,7 +31,9 @@ const TodoApp: React.FC = () => {
           )}
 
           {loading ? (
-            <div className="py-10 text-center text-slate-500">Loading tasks...</div>
+            <div className="py-10 text-center text-slate-500">
+              Loading tasks...
+            </div>
           ) : (
             <TodoList
               todos={todos}

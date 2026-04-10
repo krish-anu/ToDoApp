@@ -33,7 +33,9 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete }) => {
     <article
       className={[
         "flex items-center gap-3 rounded-xl border p-4 shadow-sm transition",
-        todo.completed ? "border-slate-200 bg-slate-50" : "border-slate-300 bg-white",
+        todo.completed
+          ? "border-slate-200 bg-slate-50"
+          : "border-slate-300 bg-white",
         isDeleting ? "opacity-50" : "",
       ].join(" ")}
     >
@@ -42,19 +44,27 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete }) => {
         onClick={handleToggle}
         disabled={isToggling || isDeleting}
         aria-pressed={todo.completed}
-        aria-label={todo.completed ? `Mark ${todo.body} incomplete` : `Mark ${todo.body} complete`}
+        aria-label={
+          todo.completed
+            ? `Mark ${todo.body} incomplete`
+            : `Mark ${todo.body} complete`
+        }
         className={[
           "h-5 w-5 rounded border-2 transition-colors",
-          todo.completed ? "border-emerald-500 bg-emerald-500" : "border-slate-300 hover:border-cyan-600",
+          todo.completed
+            ? "border-emerald-500 bg-emerald-500"
+            : "border-slate-300 hover:border-cyan-600",
         ].join(" ")}
       >
         <span className="sr-only">Toggle status</span>
       </button>
 
-      <p className={[
-        "flex-1 text-left break-words",
-        todo.completed ? "text-slate-500 line-through" : "text-slate-800",
-      ].join(" ")}>
+      <p
+        className={[
+          "flex-1 text-left break-words",
+          todo.completed ? "text-slate-500 line-through" : "text-slate-800",
+        ].join(" ")}
+      >
         {todo.body}
       </p>
 
