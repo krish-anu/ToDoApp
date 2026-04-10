@@ -93,9 +93,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete }) => {
         <p
           className={[
             "break-words",
-            todo.completed
-              ? "text-slate-500 line-through"
-              : "text-slate-800",
+            todo.completed ? "text-slate-500 line-through" : "text-slate-800",
           ].join(" ")}
         >
           {todo.body}

@@ -18,11 +18,13 @@ A modern, responsive Todo app built with **React** and **Tailwind CSS** on the f
 ## Tech Stack
 
 ### Frontend:
+
 - React
 - Tailwind CSS
 - Axios (for API calls)
 
 ### Backend:
+
 - Go (Fiber framework)
 - MongoDB
 - Gorilla Mux (if applicable)
@@ -43,12 +45,15 @@ npm run dev
 ### Backend Setup
 
 In root directory
+
 ```bash
 air
 ```
 
-### Set up MongoDB_URI 
+### Set up MongoDB_URI
+
 - Make sure MongoDB is running and the connection string is set in .env
+
 ```bash
 MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/todo_db
 ```
