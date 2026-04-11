@@ -4,7 +4,7 @@
 .env.*
 !.env.example
 
-# Node dependencies (covers nested dirs like client/node_modules)
+# Node dependencies (covers nested dirs like frontend/node_modules)
 node_modules/
 
 # Go build artifacts
@@ -13,6 +13,8 @@ node_modules/
 /ToDoAppBackend
 /bin/
 /tmp/
+backend/main
+backend/tmp/
 *.test
 *.exe
 *.exe~

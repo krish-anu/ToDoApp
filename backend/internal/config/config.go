@@ -25,8 +25,8 @@ type Config struct {
 }
 
 func Load() (Config, error) {
-	// Load local environment values when available (safe in production if file is absent).
-	_ = godotenv.Load(".env")
+	// Load local environment values when available (safe in production if files are absent).
+	_ = godotenv.Load(".env", "backend/.env")
 
 	cfg := Config{
 		MongoURI:                   os.Getenv("MONGODB_URI"),

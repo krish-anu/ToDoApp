@@ -1,5 +1,6 @@
 ### Frontend Setup
-In client directory
+
+In frontend directory
 
 ```bash
 npm install

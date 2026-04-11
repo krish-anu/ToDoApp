@@ -19,7 +19,7 @@ import (
 
 // Embed the built frontend so the binary can serve static files after deployment.
 //
-//go:embed client/dist/**
+//go:embed web/dist/**
 var embeddedFiles embed.FS
 
 func main() {

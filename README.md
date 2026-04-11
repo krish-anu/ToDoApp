@@ -37,22 +37,23 @@ A modern, responsive Todo app built with **React** and **Tailwind CSS** on the f
 ### Frontend Setup
 
 ```bash
-cd client
+cd frontend
 npm install
 npm run dev
 ```
 
 ### Backend Setup
 
-In root directory
+In backend directory
 
 ```bash
+cd backend
 air
 ```
 
 ### Set up MongoDB_URI
 
-- Make sure MongoDB is running and the connection string is set in .env
+- Make sure MongoDB is running and the connection string is set in `backend/.env`
 
 ```bash
 MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/todo_db
@@ -60,7 +61,7 @@ MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/todo_db
 
 ### AI Workflow Setup (Task From Text)
 
-Add these values to `.env` to enable the workflow endpoint:
+Add these values to `backend/.env` to enable the workflow endpoint:
 
 ```bash
 OPENAI_API_KEY=<your_openai_api_key>
